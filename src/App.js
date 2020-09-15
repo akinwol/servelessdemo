@@ -1,24 +1,28 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 
+import {API} from 'aws-amplify'
+
 function App() {
+  const [people, updatePeople] = useState([])
+  async function callApi() {
+    try {
+      const peopleData = await API.get('mainappapi', '/people') //first param is the apiname
+      console.log({ peopleData })
+      updatePeople(peopleData.people)
+    } catch (error) {
+      console.log({error})
+    }
+  } 
+  useEffect (() => {
+    callApi()
+  }, [])
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Hello </h1>
+      {
+        people.map((p, i) => <h2>{p.name}</h2>)
+      }
     </div>
   );
 }
